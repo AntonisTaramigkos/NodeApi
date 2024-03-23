@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const mongoose =  require("mongoose");
+const Product = require("./models/productModel");
+
 
 //MiddleWare
 app.use(express.json());
@@ -13,11 +15,35 @@ app.get("/" , (req,res)=> {
 app.get("/blog" , (req,res)=> {
     console.log("Hello Blog!")
 })
+app.get("/products", async(req, res)=>{
+    try{
+        const products = await Product.find({});
+        res.status(200).json(products)
 
-app.post("/product", (req, res)=>{
-    try{}
+    }catch(err){
+        res.status(500).json({message: err.message})
+    }
+
+})
+app.get("/products/:id",async(req,res)=>{
+    try {
+        const {id} = req.params;
+        const product = await Product.findById(id);
+        res.status(200).json(product)
+
+    }catch (err){
+        res.status(500).json({message: err.message})
+    }
+
+})
+app.post("/products/:id", async(req, res)=>{
+    try{
+        const product = await Product.create(req.body)
+        res.status(200).json(product)
+    }
     catch(err) {
-        console.log(err.)
+        console.log(err.message);
+        res.status(500).json({message :err.message})
     }
 
 })
